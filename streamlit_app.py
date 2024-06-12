@@ -277,4 +277,4 @@ st.altair_chart(alt.Chart(df)
 
 with  st.sidebar:
     st.title("Welcome to Our Shopping Tracking Assistant")
-    st.write("Use the table/")
+    st.write("Use the table to add, remove nd edit items. Units left show what unit are low. We also have graphs for visual viewing ")
