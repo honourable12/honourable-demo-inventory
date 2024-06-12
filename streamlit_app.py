@@ -9,7 +9,7 @@ import pandas as pd
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
-    page_title='Inventory tracker',
+    page_title='Home Inventory Tracker App',
     page_icon=':shopping_bags:', # This is an emoji shortcode. Could be a URL too.
 )
 
@@ -39,7 +39,7 @@ def initialize_data(conn):
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             item_name TEXT,
             price REAL,
-            units_sold INTEGER,
+            units_bought INTEGER,
             units_left INTEGER,
             cost_price REAL,
             reorder_point INTEGER,
@@ -51,7 +51,7 @@ def initialize_data(conn):
     cursor.execute(
         '''
         INSERT INTO inventory
-            (item_name, price, units_sold, units_left, cost_price, reorder_point, description)
+            (item_name, price, units_bought, units_left, cost_price, reorder_point, description)
         VALUES
             -- Beverages
             ('Bottled Water (500ml)', 1.50, 115, 15, 0.80, 16, 'Hydrating bottled water'),
@@ -104,7 +104,7 @@ def load_data(conn):
             'id',
             'item_name',
             'price',
-            'units_sold',
+            'units_bought',
             'units_left',
             'cost_price',
             'reorder_point',
@@ -133,7 +133,7 @@ def update_data(conn, df, changes):
             SET
                 item_name = :item_name,
                 price = :price,
-                units_sold = :units_sold,
+                units_bought = :units_bought,
                 units_left = :units_left,
                 cost_price = :cost_price,
                 reorder_point = :reorder_point,
@@ -147,9 +147,9 @@ def update_data(conn, df, changes):
         cursor.executemany(
             '''
             INSERT INTO inventory
-                (id, item_name, price, units_sold, units_left, cost_price, reorder_point, description)
+                (id, item_name, price, units_bought, units_left, cost_price, reorder_point, description)
             VALUES
-                (:id, :item_name, :price, :units_sold, :units_left, :cost_price, :reorder_point, :description)
+                (:id, :item_name, :price, :units_bought, :units_left, :cost_price, :reorder_point, :description)
             ''',
             (defaultdict(lambda: None, row) for row in changes['added_rows']),
         )
@@ -167,12 +167,7 @@ def update_data(conn, df, changes):
 # Draw the actual page, starting with the inventory table.
 
 # Set the title that appears at the top of the page.
-'''
-# :shopping_bags: Inventory tracker
-
-**Welcome to Alice's Corner Store's intentory tracker!**
-This page reads and writes directly from/to our inventory database.
-'''
+st.title("Shopping Inventory Tracker App")
 
 st.info('''
     Use the table below to add, remove, and edit items.
@@ -275,7 +270,11 @@ st.subheader('Best sellers', divider='orange')
 st.altair_chart(alt.Chart(df)
     .mark_bar(orient='horizontal')
     .encode(
-        x='units_sold',
+        x='units_bought',
         y=alt.Y('item_name').sort('-x'),
     ),
     use_container_width=True)
+
+with  st.sidebar:
+    st.title("Welcome to Our Shopping Tracking Assistant")
+    st.write("Use the table/")
